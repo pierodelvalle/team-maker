@@ -1,7 +1,9 @@
 <script setup>
 import { NDropdown } from "naive-ui"
 import { h } from "vue"
+import { SHOW_ELO } from "@/config/featureFlags.js"
 const emit = defineEmits(['click-profile', 'click-score', 'change-god']);
+const showElo = SHOW_ELO;
 
 const props = defineProps({
   player: {
@@ -29,7 +31,7 @@ function renderGodDropdownLabel(option) {
     }),
     h('span', { class: 'god-dropdown-option__name', innerHTML: option.god }),
   ]
-  if (option.elo != null) {
+  if (SHOW_ELO && option.elo != null) {
     children.push(h('span', { class: 'god-dropdown-option__elo', innerHTML: Math.round(option.elo) }))
   }
   return h('span', { class: 'god-dropdown-option' }, children)
@@ -66,7 +68,7 @@ function handleGodSelection(key) {
           tabindex="0"
           role="button"
           @contextmenu="clickScore">
-        {{ player.elo ? Math.round(player.elo) : '' }}
+        {{ showElo && player.elo ? Math.round(player.elo) : '' }}
       </span>
     </n-dropdown>
   </div>

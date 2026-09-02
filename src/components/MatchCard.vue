@@ -9,7 +9,6 @@
       <p class="match-card__map-name">{{ getMapName(match.mapname) }}</p>
       <p class="match-card__meta">{{ formatDate(match.startgametime) }}</p>
       <p v-if="match.duration != null" class="match-card__meta">{{ formatDuration(match.duration) }}</p>
-      <p v-if="eloDiff !== null" class="match-card__elo-diff">Sorpresa de {{ Math.round(eloDiff) }} Elo</p>
     </div>
     <div class="match-card__team">
       <p class="match-card__team-title">🏆 Ganadores</p>
@@ -17,7 +16,7 @@
         <li v-for="p in winners" :key="p.profile_id" class="player-list__item">
           <img class="player-list__god-image" :src="`/img/gods/${p.god}_icon.avif`" />
           {{ p.name }}
-          <span v-if="showElo" class="player-list__elo">{{ Math.round(p.elo) }}</span>
+          <span v-if="SHOW_ELO && showElo" class="player-list__elo">{{ Math.round(p.elo) }}</span>
         </li>
       </ul>
     </div>
@@ -27,7 +26,7 @@
         <li v-for="p in losers" :key="p.profile_id" class="player-list__item">
           <img class="player-list__god-image" :src="`/img/gods/${p.god}_icon.avif`" />
           {{ p.name }}
-          <span v-if="showElo" class="player-list__elo">{{ Math.round(p.elo) }}</span>
+          <span v-if="SHOW_ELO && showElo" class="player-list__elo">{{ Math.round(p.elo) }}</span>
         </li>
       </ul>
     </div>
@@ -36,6 +35,7 @@
 
 <script setup>
 import { getMapName } from '../data/maps';
+import { SHOW_ELO } from '@/config/featureFlags.js';
 
 const FALLBACK_MAP_IMAGE = '/img/maps/rm_the_unknown.webp';
 

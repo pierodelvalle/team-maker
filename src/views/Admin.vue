@@ -70,7 +70,7 @@
           <div class="teams__wrapper">
             <div class="teams__team" :class="{ 'teams__team--winner': winner === 1 }">
               <div class="teams__header">
-                <h2 class="teams__score">{{ team1Score }}</h2>
+                <h2 v-if="SHOW_ELO" class="teams__score">{{ Math.round(team1Score) }}</h2>
                 <button class="sm-button" @click="winner = 1">
                   {{ winner === 1 ? '🏆 Ganador' : 'Marcar como ganador' }}
                 </button>
@@ -87,7 +87,7 @@
 
             <div class="teams__team" :class="{ 'teams__team--winner': winner === 2 }">
               <div class="teams__header teams__header--inverse">
-                <h2 class="teams__score">{{ team2Score }}</h2>
+                <h2 v-if="SHOW_ELO" class="teams__score">{{ Math.round(team2Score) }}</h2>
                 <button class="sm-button" @click="winner = 2">
                   {{ winner === 2 ? '🏆 Ganador' : 'Marcar como ganador' }}
                 </button>
@@ -163,6 +163,7 @@ import { usePlayerDrawer } from '../composables/usePlayerDrawer.js'
 import { useAdminAuth } from '../composables/useAdminAuth.js'
 import { syncGodChange } from '../composables/usePlayerGodSync.js'
 import { fetchPlayerElos } from '../composables/usePlayerElo.js'
+import { SHOW_ELO } from '@/config/featureFlags.js'
 import { ALL_GODS } from '../data/gods.js'
 import {PLAYERS_ARRAY} from "@/data/players.js";
 

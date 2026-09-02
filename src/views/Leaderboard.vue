@@ -4,12 +4,13 @@
     <div class="stats-dashboard">
       <div class="stats-card">
         <h2>Elo Global</h2>
+        <p class="bronze-100">.</p>
         <table v-if="globalLeaderboard.length" class="player-table">
           <thead>
             <tr>
               <th>#</th>
               <th>Jugador</th>
-              <th>Elo</th>
+              <th v-if="SHOW_ELO">Elo</th>
             </tr>
           </thead>
           <tbody>
@@ -27,7 +28,7 @@
                   {{ entry.name }}
                 </div>
               </td>
-              <td>{{ eloWhole(entry.elo) }}<span class="leaderboard-elo-decimal">.{{ eloDecimal(entry.elo) }}</span></td>
+              <td v-if="SHOW_ELO">{{ eloWhole(entry.elo) }}<span class="bronze-100">.{{ eloDecimal(entry.elo) }}</span></td>
             </tr>
           </tbody>
         </table>
@@ -36,13 +37,14 @@
 
       <div class="stats-card">
         <h2>Elo por Dios Mayor</h2>
+        <p class="bronze-100">Sólo se muestran resultados en los últimos 2 meses.</p>
         <table v-if="godLeaderboard.length" class="player-table">
           <thead>
             <tr>
               <th>#</th>
               <th>Jugador</th>
               <th>Dios</th>
-              <th>Elo</th>
+              <th v-if="SHOW_ELO">Elo</th>
             </tr>
           </thead>
           <tbody>
@@ -64,7 +66,7 @@
                 </div>
               </td>
 
-              <td>{{ eloWhole(entry.elo) }}<span class="leaderboard-elo-decimal">.{{ eloDecimal(entry.elo) }}</span></td>
+              <td v-if="SHOW_ELO">{{ eloWhole(entry.elo) }}<span class="bronze-100">.{{ eloDecimal(entry.elo) }}</span></td>
             </tr>
           </tbody>
         </table>
@@ -77,6 +79,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { PLAYERS_ARRAY } from '../data/players';
+import { SHOW_ELO } from '@/config/featureFlags.js';
 
 const PLAYERS_BY_ID = Object.fromEntries(PLAYERS_ARRAY.map(p => [p.profile_id, p]));
 
@@ -147,6 +150,6 @@ onMounted(async () => {
   color: $bronze-100
   padding-left: 14px
 
-.leaderboard-elo-decimal
+.bronze-100
   color: $bronze-100
 </style>

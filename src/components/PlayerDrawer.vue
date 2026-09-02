@@ -192,8 +192,9 @@ import { PLAYERS_ARRAY } from '../data/players.js'
 import { computed, ref, watch } from 'vue'
 import { Line } from 'vue-chartjs'
 import { NDrawer, NDrawerContent } from "naive-ui"
-import { eloChartOptions } from "@/data/chartOptions.js";
+import { getEloChartOptions } from "@/data/chartOptions.js";
 import { getGodColor } from "@/data/colors.js";
+import { SHOW_ELO } from "@/config/featureFlags.js";
 import {
   Chart as ChartJS,
   LineElement,
@@ -268,6 +269,8 @@ const eloChartData = computed(() => {
     datasets: activePlayerEloHistory.value ?? [],
   }
 })
+
+const eloChartOptions = getEloChartOptions(SHOW_ELO)
 
 async function fetchGods(profileId, after = 0) {
   if (!profileId) return;

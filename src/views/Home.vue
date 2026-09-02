@@ -51,7 +51,11 @@
         <div class="teams__wrapper">
           <div class="teams__team">
             <div class="teams__header">
-              <h2 class="teams__score">{{ Math.round(team1Score) }}</h2>
+              <h2 class="teams__score">
+                <template v-if="SHOW_ELO">
+                  {{ Math.round(team1Score) }}
+                </template>
+              </h2>
               <div 
                 class="teams__wins"
                 :class="hasNoMatches ? 'teams__wins--no-matches' : ''">
@@ -76,7 +80,9 @@
           <div class="teams__team">
             <div class="teams__header teams__header--inverse">
               <h2 class="teams__score">
-                {{ Math.round(team2Score) }}
+                <template v-if="SHOW_ELO">
+                  {{ Math.round(team2Score) }}
+                </template>
               </h2>
               <div 
                 class="teams__wins"
@@ -182,6 +188,7 @@ import { usePlayerDrawer } from '../composables/usePlayerDrawer.js'
 import { useDiscord } from '../composables/useDiscord.js'
 import { syncGodChange } from '../composables/usePlayerGodSync.js'
 import { fetchPlayerElos } from '../composables/usePlayerElo.js'
+import { SHOW_ELO } from '@/config/featureFlags.js'
 import HistoryDrawer from "@/components/HistoryDrawer.vue";
 import {PLAYERS_ARRAY} from "@/data/players.js";
 
