@@ -18,6 +18,8 @@ export function useTeams() {
   // Local cache for team winrate
   const teamsCache = ref({})
 
+  const autoBalanceCache = ref({})
+
   // Team names mapping
   const teamNames = {
     "1074199836,1074203172,1074849746": "Team Frontón",
@@ -111,8 +113,11 @@ export function useTeams() {
     }
   },{ deep: true })
 
-  async function autoBalanceTeams() {
-    const playerPool = [...team1.value, ...team2.value]
+  function getPoolKey(pool) {
+    return pool.map(p => p.profile_id).sort((a, b) => a - b).join(',')
+  }
+
+  function computeAutoBalanceResults(playerPool) {
     const scores = playerPool.map(p => p.elo)
 
     const combinations = []
@@ -150,17 +155,32 @@ export function useTeams() {
     }
 
     combinations.sort((a, b) => a.difference - b.difference)
-    const top = combinations.slice(0, 5)
-    const randomTeam = top[Math.floor(Math.random() * top.length)]
+    return combinations.slice(0, 5)
+  }
+
+  async function autoBalanceTeams() {
+    const playerPool = [...team1.value, ...team2.value]
+    const poolKey = getPoolKey(playerPool)
+
+    let cached = autoBalanceCache.value[poolKey]
+    if (!cached) {
+      cached = { results: computeAutoBalanceResults(playerPool), index: 0 }
+      autoBalanceCache.value[poolKey] = cached
+    }
+
+    if (!cached.results.length) return
+
+    const chosenTeam = cached.results[cached.index]
+    cached.index = (cached.index + 1) % cached.results.length
 
     let colorPool = [...COLORS]
-    while (colorPool.length < randomTeam.team1.length + randomTeam.team2.length) colorPool.push(...COLORS)
+    while (colorPool.length < chosenTeam.team1.length + chosenTeam.team2.length) colorPool.push(...COLORS)
     let colorIndex = 0
-    randomTeam.team1.forEach(p => { p.color = colorPool[colorIndex++] })
-    randomTeam.team2.forEach(p => { p.color = colorPool[colorIndex++] })
+    chosenTeam.team1.forEach(p => { p.color = colorPool[colorIndex++] })
+    chosenTeam.team2.forEach(p => { p.color = colorPool[colorIndex++] })
 
-    team1.value = randomTeam.team1.sort((a, b) => b.elo - a.elo)
-    team2.value = randomTeam.team2.sort((a, b) => b.elo - a.elo)
+    team1.value = chosenTeam.team1.sort((a, b) => b.elo - a.elo)
+    team2.value = chosenTeam.team2.sort((a, b) => b.elo - a.elo)
   }
 
   function normalizeTeams(teams) {
