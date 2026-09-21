@@ -260,8 +260,8 @@ const saveConfiguration = () => {
     return
   }
 
-  if (Object.keys(savedConfigurations.value).length === 4) {
-    showToast('Solo puedes preparar 4 configuraciones.', 'error', 3000)
+  if (Object.keys(savedConfigurations.value).length === 2) {
+    showToast('Solo puedes preparar 2 configuraciones.', 'error', 3000)
     return
   }
 
