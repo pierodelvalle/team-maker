@@ -53,7 +53,7 @@
         <div class="stats-card__header">
           <h2>Mayores sorpresas</h2>
           <select v-model="upsetsFilter" class="stats-select">
-            <option value="2-weeks">Últimas 2 semanas</option>
+            <option value="2-week">Últimas 2 semanas</option>
             <option value="1-month">Último mes</option>
             <option value="2-month">Últimos 2 meses</option>
             <option value="6-month">Últimos 6 meses</option>
@@ -117,6 +117,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { PLAYERS_ARRAY } from '../data/players';
 import { getMapName } from '../data/maps';
 import MatchCard from '../components/MatchCard.vue';
+import { getFilterTimestamp } from '../helpers/time.js';
 
 const maps = ref([]);
 const matchups = ref([]);
@@ -126,26 +127,7 @@ const longestMatches = ref([]);
 const teamGamesOnly = ref(true);
 const upsetsFilter = ref('all');
 
-const upsetsAfter = computed(() => {
-  const today = new Date();
-
-  switch (upsetsFilter.value) {
-    case '2-weeks':
-      today.setDate(today.getDate() - 14);
-      return Math.round(today.getTime() / 1000);
-    case '1-month':
-      today.setMonth(today.getMonth() - 1);
-      return Math.round(today.getTime() / 1000);
-    case '2-month':
-      today.setMonth(today.getMonth() - 2);
-      return Math.round(today.getTime() / 1000);
-    case '6-month':
-      today.setMonth(today.getMonth() - 6);
-      return Math.round(today.getTime() / 1000);
-    default:
-      return 0;
-  }
-});
+const upsetsAfter = computed(() => getFilterTimestamp(upsetsFilter.value));
 
 const PLAYERS_BY_ID = Object.fromEntries(PLAYERS_ARRAY.map(p => [p.profile_id, p]));
 

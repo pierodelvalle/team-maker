@@ -195,6 +195,7 @@ import { NDrawer, NDrawerContent } from "naive-ui"
 import { getEloChartOptions } from "@/data/chartOptions.js";
 import { getGodColor } from "@/data/colors.js";
 import { SHOW_ELO } from "@/config/featureFlags.js";
+import { getFilterTimestamp } from "@/helpers/time.js";
 import {
   Chart as ChartJS,
   LineElement,
@@ -240,29 +241,7 @@ const activePlayerWinstreak = ref();
 const activePlayerEloHistory = ref();
 
 const timestampFilter = ref('2-week');
-const timestampValue = computed(() => {
-  const today = new Date();
-
-  switch (timestampFilter.value) {
-    case '1-week':
-      today.setDate(today.getDate() - 7);
-      return Math.round(today.getTime() / 1000);
-    case '2-week':
-      today.setDate(today.getDate() - 14);
-      return Math.round(today.getTime() / 1000);
-    case '1-month':
-      today.setMonth(today.getMonth() - 1);
-      return Math.round(today.getTime() / 1000);
-    case '2-month':
-      today.setMonth(today.getMonth() - 2);
-      return Math.round(today.getTime() / 1000);
-    case '6-month':
-      today.setMonth(today.getMonth() - 6);
-      return Math.round(today.getTime() / 1000);
-    default:
-      return 0;
-  }
-});
+const timestampValue = computed(() => getFilterTimestamp(timestampFilter.value));
 
 const eloChartData = computed(() => {
   return {
