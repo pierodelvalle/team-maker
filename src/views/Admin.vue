@@ -44,15 +44,21 @@
         </div>
 
         <div class="teams">
-          <div>
+          <component
+            :is="hasHistory ? 'button' : 'div'"
+            :type="hasHistory ? 'button' : undefined"
+            :title="hasHistory ? 'Ver historial del enfrentamiento' : undefined"
+            class="teams__matchup"
+            @click="hasHistory && openHistoryDrawer()">
             <div class="teams__labels">
               <span>{{ team1Label }}</span>
+              <span v-if="hasHistory" class="teams__history-hint">
+                Ver historial ({{ matchup.history.length }})
+                <span aria-hidden="true">›</span>
+              </span>
               <span>{{ team2Label }}</span>
             </div>
-            <div
-              v-if="matchup !== null"
-              class="teams__probability"
-              @click="openHistoryDrawer">
+            <div v-if="matchup !== null" class="teams__probability">
               <div
                 class="teams__probability-item"
                 :class="{ 'teams__probability-item--win': matchup && matchup[team1Key] && matchup[team1Key].probability > 50 }"
@@ -66,7 +72,7 @@
                 {{ (matchup && matchup[team2Key] ? matchup[team2Key].probability.toFixed() : 0) }}%
               </div>
             </div>
-          </div>
+          </component>
           <div class="teams__wrapper">
             <div class="teams__team" :class="{ 'teams__team--winner': winner === 1 }">
               <div class="teams__header">
@@ -200,6 +206,8 @@ const { active, playerDetailsActive, openPlayerDetails } = usePlayerDrawer([...P
 
 const historyDrawerActive = ref(false)
 const history = ref(null);
+
+const hasHistory = computed(() => matchup.value?.history?.length > 0)
 
 function openHistoryDrawer() {
   historyDrawerActive.value = true;
